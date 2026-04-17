@@ -734,6 +734,601 @@
     .counter-unit{ padding:.6rem .2rem; }
     .kb-hint{ display:none; }
   }
+
+  /* ---------- GIFT PUZZLE SECTION ---------- */
+  .gift-section{
+    position:relative;
+    background: linear-gradient(180deg, transparent, rgba(232,213,242,.22) 50%, transparent);
+  }
+
+  .gift-stage{
+    max-width: 720px;
+    margin: 0 auto;
+    text-align:center;
+    position:relative;
+  }
+
+  /* ---- Gift Box (sealed state) ---- */
+  .gift-box-wrap{
+    position:relative;
+    display:flex; justify-content:center; align-items:center;
+    min-height: 380px;
+    perspective: 1000px;
+  }
+
+  .gift-box{
+    position:relative;
+    width: 240px; height: 240px;
+    cursor:pointer;
+    transition: transform .5s cubic-bezier(.3,1.6,.5,1);
+    transform-style: preserve-3d;
+  }
+  .gift-box:hover{ transform: translateY(-8px) rotate(-2deg); }
+  .gift-box.opened{ cursor:default; }
+
+  .gift-lid{
+    position:absolute; top:0; left:-10px; right:-10px;
+    height: 60px;
+    background: linear-gradient(135deg, #FF8FA8, #E85A7A);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow:
+      0 6px 15px rgba(232,90,122,.35),
+      inset 0 -4px 0 rgba(0,0,0,.08);
+    transform-origin: center bottom;
+    transition: transform 1.1s cubic-bezier(.5,-.2,.5,1.4), opacity .5s;
+    z-index: 3;
+  }
+  .gift-lid::before{
+    content:''; position:absolute; inset:0;
+    background: repeating-linear-gradient(45deg,
+      transparent 0 12px, rgba(255,255,255,.08) 12px 24px);
+    border-radius: 8px 8px 4px 4px;
+    pointer-events:none;
+  }
+
+  .gift-body{
+    position:absolute; top: 55px; left:0; right:0; bottom:0;
+    background: linear-gradient(135deg, #FFB6C1, #FF8FA8);
+    border-radius: 4px 4px 12px 12px;
+    box-shadow:
+      0 15px 30px rgba(232,90,122,.3),
+      inset 0 4px 0 rgba(0,0,0,.08),
+      inset 0 -6px 20px rgba(232,90,122,.2);
+  }
+  .gift-body::before{
+    content:''; position:absolute; inset:0;
+    background: repeating-linear-gradient(45deg,
+      transparent 0 12px, rgba(255,255,255,.08) 12px 24px);
+    border-radius: 4px 4px 12px 12px;
+    pointer-events:none;
+  }
+
+  /* Vertical ribbon */
+  .ribbon-v{
+    position:absolute;
+    top:-8px; bottom:0; left: 50%;
+    width: 30px; margin-left: -15px;
+    background: linear-gradient(90deg, #F2D98A, #D4AF37, #F2D98A);
+    box-shadow: 0 0 10px rgba(212,175,55,.4);
+    z-index: 4;
+  }
+  /* Horizontal ribbon */
+  .ribbon-h{
+    position:absolute;
+    top: 55px; height: 30px;
+    left:-10px; right:-10px;
+    background: linear-gradient(180deg, #F2D98A, #D4AF37, #F2D98A);
+    box-shadow: 0 0 10px rgba(212,175,55,.4);
+    z-index: 4;
+    margin-top: 15px;
+  }
+
+  /* The bow */
+  .bow{
+    position:absolute; top: -25px; left:50%; transform: translateX(-50%);
+    z-index: 5;
+    width: 80px; height: 55px;
+  }
+  .bow::before, .bow::after{
+    content:''; position:absolute; top: 8px;
+    width: 32px; height: 38px;
+    background: radial-gradient(ellipse at center, #F2D98A, #D4AF37);
+    border-radius: 50% 20% 50% 20%;
+    box-shadow: 0 2px 8px rgba(212,175,55,.5);
+  }
+  .bow::before{ left: 0; transform: rotate(-20deg); }
+  .bow::after { right: 0; transform: rotate(20deg);  border-radius: 20% 50% 20% 50%; }
+  .bow-knot{
+    position:absolute; top: 18px; left: 50%;
+    transform: translateX(-50%);
+    width: 18px; height: 22px;
+    background: linear-gradient(135deg, #D4AF37, #B8860B);
+    border-radius: 50%;
+    z-index:2;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  }
+
+  .lock-badge{
+    position:absolute;
+    bottom: 50px; left: 50%; transform: translateX(-50%);
+    width: 52px; height: 52px;
+    background: #fff;
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 1.6rem;
+    box-shadow: 0 6px 16px rgba(232,90,122,.3);
+    z-index: 6;
+    animation: lockPulse 2s ease-in-out infinite;
+  }
+  @keyframes lockPulse{
+    0%,100%{ transform: translateX(-50%) scale(1); }
+    50%    { transform: translateX(-50%) scale(1.08); }
+  }
+
+  .gift-shadow{
+    position:absolute;
+    bottom: -18px; left: 50%; transform: translateX(-50%);
+    width: 220px; height: 20px;
+    background: radial-gradient(ellipse at center, rgba(232,90,122,.35), transparent 70%);
+    filter: blur(5px);
+    z-index: -1;
+  }
+
+  /* Opened state animations */
+  .gift-box.opening .gift-lid{
+    animation: liftLid 1.2s cubic-bezier(.5,-.3,.5,1.5) forwards;
+  }
+  .gift-box.opening .bow{
+    animation: liftBow 1.2s cubic-bezier(.5,-.3,.5,1.5) forwards;
+  }
+  .gift-box.opening .ribbon-v,
+  .gift-box.opening .ribbon-h{
+    animation: fadeRibbon .6s ease forwards;
+  }
+  @keyframes liftLid{
+    0%  { transform: translateY(0) rotate(0); opacity:1; }
+    30% { transform: translateY(-40px) rotate(-8deg); }
+    100%{ transform: translateY(-220px) rotate(-35deg); opacity:0; }
+  }
+  @keyframes liftBow{
+    0%  { transform: translateX(-50%) translateY(0); opacity:1; }
+    30% { transform: translateX(-50%) translateY(-50px) rotate(-10deg); }
+    100%{ transform: translateX(-50%) translateY(-280px) rotate(-25deg); opacity:0; }
+  }
+  @keyframes fadeRibbon{
+    to{ opacity:0; transform: scaleY(.2); }
+  }
+
+  /* Glow when box is clickable & unlocked */
+  .gift-box.unlocked{ animation: readyGlow 1.8s ease-in-out infinite; }
+  @keyframes readyGlow{
+    0%,100%{ filter: drop-shadow(0 0 0 rgba(212,175,55,0)); }
+    50%    { filter: drop-shadow(0 0 20px rgba(212,175,55,.7)); }
+  }
+
+  /* ---- Puzzle overlay ---- */
+  .puzzle-overlay{
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(74,44,61,.75), rgba(74,44,61,.92));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 200;
+    display:flex; align-items:center; justify-content:center;
+    padding: 1rem;
+    opacity:0; pointer-events:none;
+    transition: opacity .5s ease;
+  }
+  .puzzle-overlay.show{ opacity:1; pointer-events:auto; }
+
+  .puzzle-card{
+    background: linear-gradient(135deg, #fff7fa, #fde9f1);
+    border-radius: 28px;
+    padding: clamp(1.25rem, 3.5vw, 2rem);
+    box-shadow: 0 30px 80px rgba(74,44,61,.5);
+    border: 2px solid rgba(255,255,255,.9);
+    max-width: 520px; width: 100%;
+    text-align:center;
+    position:relative;
+    transform: scale(.9); opacity:0;
+    transition: transform .5s cubic-bezier(.3,1.6,.5,1), opacity .4s;
+  }
+  .puzzle-overlay.show .puzzle-card{ transform: scale(1); opacity:1; }
+
+  .puzzle-close{
+    position:absolute; top: .75rem; right: .85rem;
+    width: 32px; height: 32px; border-radius:50%;
+    border: 1.5px solid var(--pink);
+    background: #fff; color: var(--rose);
+    font-size: 1rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition: all .2s;
+    z-index: 10;
+  }
+  .puzzle-close:hover{ background: var(--rose); color:#fff; transform: rotate(90deg); }
+
+  .puzzle-card h3{
+    font-family:'Pacifico', cursive;
+    color: var(--rose);
+    font-size: clamp(1.4rem, 4vw, 1.85rem);
+    margin-bottom: .3rem;
+  }
+  .puzzle-card .puzzle-sub{
+    font-family:'Caveat', cursive;
+    color: var(--mauve);
+    font-size: 1.15rem;
+    margin-bottom: 1.1rem;
+  }
+
+  /* The sky / catching area */
+  .catch-sky{
+    position:relative;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    max-height: 360px;
+    border-radius: 22px;
+    background:
+      linear-gradient(180deg, #FFE8F0 0%, #FCE4F5 50%, #F3E4FB 100%);
+    overflow: hidden;
+    box-shadow: inset 0 4px 14px rgba(232,90,122,.12);
+    cursor: crosshair;
+    margin: 0 auto;
+  }
+  /* Soft clouds as background texture */
+  .catch-sky::before{
+    content:''; position:absolute; inset:0;
+    background-image:
+      radial-gradient(ellipse 60px 22px at 20% 25%, rgba(255,255,255,.6), transparent 70%),
+      radial-gradient(ellipse 80px 26px at 75% 15%, rgba(255,255,255,.55), transparent 70%),
+      radial-gradient(ellipse 70px 24px at 50% 80%, rgba(255,255,255,.4), transparent 70%),
+      radial-gradient(ellipse 90px 28px at 15% 70%, rgba(255,255,255,.5), transparent 70%);
+    pointer-events:none;
+  }
+
+  /* Floating catchables */
+  .catchable{
+    position:absolute;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    cursor: pointer;
+    user-select: none;
+    filter: drop-shadow(0 3px 6px rgba(232,90,122,.25));
+    animation-name: floatDrift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transition: transform .15s ease;
+    will-change: transform;
+  }
+  .catchable:hover{ transform: scale(1.2) rotate(-5deg); }
+  .catchable.caught{
+    pointer-events:none;
+    animation: catchBurst .6s ease-out forwards;
+  }
+  @keyframes catchBurst{
+    0%   { transform: scale(1) rotate(0); opacity:1; }
+    40%  { transform: scale(1.6) rotate(15deg); opacity:1; filter: drop-shadow(0 0 20px rgba(232,90,122,.8)); }
+    100% { transform: scale(.1) rotate(45deg) translateY(-30px); opacity:0; }
+  }
+  @keyframes floatDrift{
+    0%   { transform: translate(0,0) rotate(-8deg); }
+    25%  { transform: translate(30px,-18px) rotate(6deg); }
+    50%  { transform: translate(-10px,-35px) rotate(-4deg); }
+    75%  { transform: translate(-28px,-18px) rotate(8deg); }
+    100% { transform: translate(0,0) rotate(-8deg); }
+  }
+  /* Variety: some catchables drift differently */
+  .catchable.drift-b{ animation-name: floatDriftB; }
+  .catchable.drift-c{ animation-name: floatDriftC; }
+  @keyframes floatDriftB{
+    0%   { transform: translate(0,0) rotate(5deg); }
+    33%  { transform: translate(-25px,-25px) rotate(-8deg); }
+    66%  { transform: translate(20px,-40px) rotate(4deg); }
+    100% { transform: translate(0,0) rotate(5deg); }
+  }
+  @keyframes floatDriftC{
+    0%   { transform: translate(0,0) rotate(0); }
+    50%  { transform: translate(15px,-45px) rotate(12deg); }
+    100% { transform: translate(0,0) rotate(0); }
+  }
+
+  /* Click ripple */
+  .catch-ripple{
+    position:absolute;
+    pointer-events:none;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 2px solid rgba(232,90,122,.6);
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple .6s ease-out forwards;
+  }
+  @keyframes ripple{
+    to{ transform: translate(-50%, -50%) scale(1.6); opacity:0; }
+  }
+
+  /* Heart-meter at the bottom */
+  .heart-meter{
+    display:flex; justify-content:center; align-items:center;
+    gap: .45rem;
+    margin-top: 1rem;
+  }
+  .meter-heart{
+    width: 32px; height: 32px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 1.5rem;
+    color: #E8D5E6;
+    transition: transform .3s cubic-bezier(.3,1.8,.5,1), color .3s, filter .3s;
+  }
+  .meter-heart.filled{
+    color: var(--rose);
+    filter: drop-shadow(0 0 8px rgba(232,90,122,.6));
+    animation: meterPop .5s cubic-bezier(.3,1.8,.5,1);
+  }
+  @keyframes meterPop{
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.6) rotate(-10deg); }
+    100% { transform: scale(1); }
+  }
+
+  .puzzle-progress{
+    margin-top: .6rem;
+    font-family:'Caveat', cursive;
+    color: var(--rose);
+    font-size: 1.15rem;
+    min-height: 1.5em;
+  }
+
+  .puzzle-hint{
+    margin-top: .8rem;
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: .9rem;
+  }
+
+  /* Solved state: sky fills with glow */
+  .puzzle-card.solved .catch-sky{
+    animation: skyCelebrate 1s ease;
+  }
+  @keyframes skyCelebrate{
+    0%   { box-shadow: inset 0 4px 14px rgba(232,90,122,.12); }
+    50%  { box-shadow: inset 0 0 50px rgba(212,175,55,.6); transform: scale(1.02); }
+    100% { box-shadow: inset 0 4px 14px rgba(232,90,122,.12); transform: scale(1); }
+  }
+
+
+  /* ---- Gift reveal: coupon card ---- */
+  .coupon-wrap{
+    position: relative;
+    max-width: 560px;
+    margin: 1.5rem auto 0;
+    opacity: 0;
+    transform: translateY(40px) scale(.8);
+    pointer-events: none;
+    transition: opacity .9s ease, transform 1s cubic-bezier(.3,1.6,.5,1);
+  }
+  .coupon-wrap.show{
+    opacity:1;
+    transform: translateY(0) scale(1);
+    pointer-events:auto;
+  }
+
+  .coupon{
+    position: relative;
+    background: linear-gradient(135deg, #fffdf5, #fff4d9 50%, #fce8c6);
+    border-radius: 24px;
+    padding: 2rem 1.5rem 1.75rem;
+    box-shadow:
+      0 30px 70px rgba(212,175,55,.3),
+      0 0 0 3px rgba(255,255,255,.7) inset,
+      0 0 0 5px rgba(212,175,55,.5) inset;
+    overflow: hidden;
+  }
+  .coupon::before{
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(255,255,255,.4) 50%,
+      transparent 70%
+    );
+    animation: shine 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes shine{
+    0%, 100%{ transform: translateX(-30%) translateY(-30%); }
+    50%     { transform: translateX(30%)  translateY(30%); }
+  }
+
+  /* Scalloped edges */
+  .coupon::after{
+    content: '';
+    position: absolute;
+    top: 50%; left: -10px; right: -10px;
+    height: 20px;
+    background:
+      radial-gradient(circle at 10px 10px, var(--cream) 8px, transparent 9px);
+    background-size: 20px 20px;
+    background-repeat: repeat-x;
+    transform: translateY(-50%);
+    pointer-events:none;
+  }
+
+  .coupon-brand{
+    font-family:'Caveat', cursive;
+    color: var(--mauve);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: .3rem;
+  }
+  .coupon-title{
+    font-family:'Pacifico', cursive;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    background: linear-gradient(135deg, #b8860b, var(--gold), #b8860b);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom: .5rem;
+  }
+  .coupon-amount{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    color: var(--ink);
+    line-height:1;
+    margin: .6rem 0;
+    position: relative;
+    display:inline-block;
+  }
+  .coupon-amount .rupee{
+    font-size: .65em;
+    color: var(--rose);
+    vertical-align: top;
+    margin-right: .1em;
+  }
+  .coupon-amount::after{
+    content:'✦'; position:absolute;
+    top: -10px; right: -24px;
+    color: var(--gold);
+    font-size: 1rem;
+    animation: sparkle 1.8s ease-in-out infinite;
+  }
+  .coupon-for{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    color: var(--ink-soft);
+    margin-bottom: 1.25rem;
+    font-size: .98rem;
+  }
+  .coupon-brand-logo{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 4px;
+    color: var(--rose);
+    margin: 0 0 1.25rem;
+    padding-bottom: .6rem;
+    border-bottom: 2px dotted rgba(232,90,122,.3);
+    display:inline-block;
+  }
+  .coupon-code-label{
+    font-family:'Quicksand', sans-serif;
+    color: var(--ink-soft);
+    font-size: .85rem;
+    letter-spacing: 1.5px;
+    margin-bottom: .4rem;
+    text-transform: uppercase;
+  }
+  .coupon-code{
+    display:inline-flex;
+    align-items:center;
+    gap: .5rem;
+    padding: .6rem 1rem;
+    background: #fff;
+    border: 2px dashed var(--rose);
+    border-radius: 10px;
+    font-family:'Quicksand', monospace, sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .2s;
+    user-select: all;
+  }
+  .coupon-code:hover{
+    background: var(--blush);
+    transform: scale(1.03);
+  }
+  .copy-status{
+    display:block;
+    font-family:'Caveat', cursive;
+    color: var(--rose);
+    font-size: 1rem;
+    margin-top: .5rem;
+    min-height: 1.2em;
+    transition: opacity .3s;
+  }
+  .coupon-expiry{
+    margin-top: 1rem;
+    font-family:'Caveat', cursive;
+    color: var(--mauve);
+    font-size: .95rem;
+  }
+  .coupon-note{
+    margin-top: 1rem;
+    font-family:'Caveat', cursive;
+    color: var(--rose);
+    font-size: 1.2rem;
+    line-height: 1.4;
+  }
+
+  /* Floating rays behind coupon */
+  .ray-burst{
+    position:absolute;
+    inset: -20%;
+    z-index: -1;
+    pointer-events:none;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    background:
+      conic-gradient(
+        from 0deg,
+        rgba(255,215,125,0) 0deg,
+        rgba(255,215,125,.45) 10deg,
+        rgba(255,215,125,0) 20deg,
+        rgba(255,180,163,0) 30deg,
+        rgba(255,180,163,.35) 45deg,
+        rgba(255,180,163,0) 60deg,
+        rgba(255,215,125,0) 80deg,
+        rgba(255,215,125,.4) 100deg,
+        rgba(255,215,125,0) 120deg,
+        transparent 360deg
+      );
+    animation: raySpin 18s linear infinite;
+    filter: blur(10px);
+  }
+  .ray-burst.show{ opacity:1; }
+  @keyframes raySpin{
+    to { transform: rotate(360deg); }
+  }
+
+  /* Big "GIFT UNLOCKED" banner */
+  .gift-banner{
+    font-family:'Pacifico', cursive;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    background: linear-gradient(135deg, var(--rose), var(--gold), var(--lilac));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom: .4rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .6s ease .2s, transform .6s cubic-bezier(.3,1.6,.5,1) .2s;
+  }
+  .gift-banner.show{ opacity:1; transform: translateY(0); }
+
+  .gift-intro-text{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .gift-cta{
+    font-family:'Caveat', cursive;
+    color: var(--rose);
+    font-size: 1.3rem;
+    margin-top: 1rem;
+    animation: pulseHint 2s ease-in-out infinite;
+  }
+  @keyframes pulseHint{
+    0%,100%{ opacity:.85; }
+    50%    { opacity:1; }
+  }
+
+  @media (max-width: 520px){
+    .puzzle-grid{ width: min(280px, 78vw); gap: 6px; padding: 8px; }
+    .tile{ font-size: 1.5rem; border-radius: 11px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1112,6 +1707,72 @@
       </div>
     </div>
   </section>
+
+  <!-- BIRTHDAY GIFT PUZZLE -->
+  <section class="gift-section" id="gift-sec">
+    <div class="container">
+      <div class="sec-head">
+        <div class="kicker">🎁 a little something</div>
+        <h2>i got you a gift, Meoww</h2>
+        <p>But you'll have to earn it — nothing too hard, pretty girl. Just slide a few hearts into place and the box will open for you.</p>
+      </div>
+
+      <div class="gift-stage">
+        <div class="gift-box-wrap">
+          <div class="gift-box" id="giftBox" role="button" aria-label="Birthday gift box">
+            <div class="bow"><div class="bow-knot"></div></div>
+            <div class="gift-lid"></div>
+            <div class="ribbon-h"></div>
+            <div class="gift-body"></div>
+            <div class="ribbon-v"></div>
+            <div class="lock-badge" id="lockBadge">🔒</div>
+            <div class="gift-shadow"></div>
+          </div>
+        </div>
+        <div class="gift-cta" id="giftCta">✨ click the box to unlock your gift ✨</div>
+
+        <!-- Revealed coupon (hidden until solved) -->
+        <div class="coupon-wrap" id="couponWrap">
+          <div class="ray-burst" id="rayBurst"></div>
+          <div class="gift-banner" id="giftBanner">✦ Gift Unlocked ✦</div>
+          <div class="coupon">
+            <div class="coupon-brand">🎀 Happy Birthday 🎀</div>
+            <div class="coupon-title">Your Gift, my Meoww</div>
+            <div class="coupon-brand-logo">MYNTRA</div>
+            <div class="coupon-amount"><span class="rupee">₹</span>4,000</div>
+            <div class="coupon-for">Gift Voucher · because you deserve a tiny shopping spree, pretty girl</div>
+            <div class="coupon-code-label">your voucher code</div>
+            <div class="coupon-code" id="couponCode" title="Click to copy">
+              <span id="couponCodeText">BANNU-MEOWW-4K-LOVE</span>
+              <span>📋</span>
+            </div>
+            <div class="copy-status" id="copyStatus"></div>
+            <div class="coupon-expiry">✨ valid for all your favourite wishlists ✨</div>
+            <div class="coupon-note">go shop pretty things, baby.<br>take pictures for me 📸💗</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Puzzle Overlay -->
+  <div class="puzzle-overlay" id="puzzleOverlay" aria-hidden="true">
+    <div class="puzzle-card" id="puzzleCard" role="dialog" aria-label="Catch the hearts puzzle">
+      <button class="puzzle-close" id="puzzleClose" aria-label="Close puzzle">✕</button>
+      <h3>catch 5 hearts, pretty girl 💗</h3>
+      <div class="puzzle-sub">click the floating hearts — they fly away when caught ✨</div>
+      <div class="catch-sky" id="catchSky"></div>
+      <div class="heart-meter" id="heartMeter">
+        <div class="meter-heart">♡</div>
+        <div class="meter-heart">♡</div>
+        <div class="meter-heart">♡</div>
+        <div class="meter-heart">♡</div>
+        <div class="meter-heart">♡</div>
+      </div>
+      <div class="puzzle-progress" id="puzzleProgress">catch 5 more to unlock your gift ✦</div>
+      <div class="puzzle-hint">only pink hearts count — the paws and sparkles are just along for the ride 🐾</div>
+    </div>
+  </div>
 
   <!-- DIAMOND RING PROMISE -->
   <section class="promise">
@@ -1500,6 +2161,249 @@
 
   /* Fade out keyboard hint after 15s */
   setTimeout(()=> document.getElementById('kbHint').classList.add('hide'), 15000);
+
+  /* ====== GIFT PUZZLE — catch the hearts ====== */
+  (function giftPuzzle(){
+    const box = document.getElementById('giftBox');
+    const cta = document.getElementById('giftCta');
+    const lockBadge = document.getElementById('lockBadge');
+    const overlay = document.getElementById('puzzleOverlay');
+    const closeBtn = document.getElementById('puzzleClose');
+    const sky = document.getElementById('catchSky');
+    const meter = document.getElementById('heartMeter');
+    const progress = document.getElementById('puzzleProgress');
+    const couponWrap = document.getElementById('couponWrap');
+    const giftBanner = document.getElementById('giftBanner');
+    const rayBurst = document.getElementById('rayBurst');
+    const couponCode = document.getElementById('couponCode');
+    const copyStatus = document.getElementById('copyStatus');
+
+    const TARGET = 5;
+    let caught = 0;
+    let solved = false;
+    let spawnTimer = null;
+
+    const HEARTS   = ['💖','💗','💕','❤️','💝'];
+    const DECOYS   = ['🐾','✨','🌸','⭐','🎀'];
+
+    function spawnCatchable(isHeart){
+      if(!overlay.classList.contains('show') || solved) return;
+      const el = document.createElement('div');
+      el.className = 'catchable';
+      const drift = ['', 'drift-b', 'drift-c'][Math.floor(Math.random()*3)];
+      if(drift) el.classList.add(drift);
+      el.textContent = isHeart
+        ? HEARTS[Math.floor(Math.random()*HEARTS.length)]
+        : DECOYS[Math.floor(Math.random()*DECOYS.length)];
+      el.dataset.heart = isHeart ? '1' : '0';
+
+      // Random starting position inside sky
+      const r = sky.getBoundingClientRect();
+      const x = Math.random() * (r.width  - 50);
+      const y = Math.random() * (r.height - 50);
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+      el.style.animationDuration = (3 + Math.random()*3) + 's';
+      el.style.animationDelay = (-Math.random()*2) + 's';
+      el.style.fontSize = (1.7 + Math.random()*0.8) + 'rem';
+
+      el.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        onCatchableClick(el, isHeart, e);
+      });
+
+      sky.appendChild(el);
+
+      // Auto-remove after a while so the sky doesn't fill up
+      setTimeout(()=>{
+        if(el.parentNode && !el.classList.contains('caught')){
+          el.style.transition = 'opacity .6s ease';
+          el.style.opacity = '0';
+          setTimeout(()=> el.remove(), 600);
+        }
+      }, 5500 + Math.random()*2000);
+    }
+
+    function onCatchableClick(el, isHeart, e){
+      // Little ripple effect at the click location (inside sky)
+      const r = sky.getBoundingClientRect();
+      const rip = document.createElement('div');
+      rip.className = 'catch-ripple';
+      rip.style.left = (e.clientX - r.left) + 'px';
+      rip.style.top  = (e.clientY - r.top) + 'px';
+      sky.appendChild(rip);
+      setTimeout(()=> rip.remove(), 650);
+
+      if(isHeart){
+        if(el.classList.contains('caught')) return;
+        el.classList.add('caught');
+        setTimeout(()=> el.remove(), 600);
+        caught++;
+        updateMeter();
+        playMeow();
+        if(caught >= TARGET){
+          onSolved();
+        }
+      } else {
+        // Gentle wiggle on decoys (no punishment — this is her birthday!)
+        el.style.transition = 'transform .2s';
+        el.style.transform = 'scale(1.3) rotate(12deg)';
+        setTimeout(()=>{
+          el.style.transform = '';
+        }, 200);
+      }
+    }
+
+    function updateMeter(){
+      const hearts = meter.querySelectorAll('.meter-heart');
+      hearts.forEach((h, i)=>{
+        if(i < caught){
+          if(!h.classList.contains('filled')){
+            h.classList.add('filled');
+            h.textContent = '♥';
+          }
+        }
+      });
+      const remaining = Math.max(0, TARGET - caught);
+      progress.textContent = remaining > 0
+        ? `${remaining} more heart${remaining>1?'s':''} to unlock your gift ✦`
+        : `all caught — opening your gift, Meoww ♡`;
+    }
+
+    function startSpawning(){
+      // Start with a few already on screen
+      for(let i=0; i<4; i++) setTimeout(()=> spawnCatchable(true), i*150);
+      for(let i=0; i<2; i++) setTimeout(()=> spawnCatchable(false), 400 + i*200);
+      // Then keep spawning, mostly hearts
+      clearInterval(spawnTimer);
+      spawnTimer = setInterval(()=>{
+        if(solved) return;
+        // ~70% hearts, 30% decoys — plenty of hearts so it stays easy
+        spawnCatchable(Math.random() < 0.7);
+      }, 700);
+    }
+
+    function stopSpawning(){
+      clearInterval(spawnTimer);
+      spawnTimer = null;
+    }
+
+    function resetGame(){
+      caught = 0;
+      solved = false;
+      sky.innerHTML = '';
+      const hearts = meter.querySelectorAll('.meter-heart');
+      hearts.forEach(h => { h.classList.remove('filled'); h.textContent = '♡'; });
+      progress.textContent = 'catch 5 hearts to unlock your gift ✦';
+      document.getElementById('puzzleCard').classList.remove('solved');
+    }
+
+    function onSolved(){
+      solved = true;
+      stopSpawning();
+      document.getElementById('puzzleCard').classList.add('solved');
+      // Final celebration burst inside the sky
+      const r = sky.getBoundingClientRect();
+      for(let i=0; i<18; i++){
+        const burst = document.createElement('div');
+        burst.className = 'catchable caught';
+        burst.textContent = ['💖','✨','🎀','🌸','💗'][Math.floor(Math.random()*5)];
+        burst.style.left = (Math.random() * (r.width - 40)) + 'px';
+        burst.style.top  = (Math.random() * (r.height - 40)) + 'px';
+        burst.style.animationDelay = (Math.random() * .3) + 's';
+        sky.appendChild(burst);
+        setTimeout(()=> burst.remove(), 900);
+      }
+      burstConfetti(60);
+      setTimeout(()=>{
+        closePuzzle();
+        openGift();
+      }, 1200);
+    }
+
+    function openPuzzle(){
+      if(solved){
+        couponWrap.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      resetGame();
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+      startSpawning();
+    }
+
+    function closePuzzle(){
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+      stopSpawning();
+    }
+
+    function openGift(){
+      box.classList.add('unlocked');
+      lockBadge.textContent = '🔓';
+      setTimeout(()=>{
+        box.classList.add('opening');
+        lockBadge.style.opacity = '0';
+        cta.style.display = 'none';
+        const rect = box.getBoundingClientRect();
+        for(let i=0; i<30; i++){
+          setTimeout(()=>{
+            const p = document.createElement('div');
+            p.className = 'confetti';
+            p.textContent = ['✨','💗','🎀','⭐','🌟','💖'][Math.floor(Math.random()*6)];
+            p.style.left = (rect.left + rect.width/2 + (Math.random()*100 - 50)) + 'px';
+            p.style.top  = (rect.top + 30) + 'px';
+            p.style.animationDuration = (2.5 + Math.random()*2) + 's';
+            p.style.fontSize = (1.1 + Math.random()*.9) + 'rem';
+            document.body.appendChild(p);
+            setTimeout(()=> p.remove(), 5000);
+          }, i * 40);
+        }
+      }, 400);
+      setTimeout(()=>{
+        rayBurst.classList.add('show');
+        giftBanner.classList.add('show');
+        couponWrap.classList.add('show');
+        burstConfetti(80);
+        couponWrap.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 1500);
+    }
+
+    box.addEventListener('click', (e)=>{ e.stopPropagation(); openPuzzle(); });
+    closeBtn.addEventListener('click', (e)=>{ e.stopPropagation(); closePuzzle(); });
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closePuzzle(); });
+    document.getElementById('puzzleCard').addEventListener('click', (e)=> e.stopPropagation());
+    sky.addEventListener('click', (e)=> e.stopPropagation());
+
+    couponCode.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const text = document.getElementById('couponCodeText').textContent;
+      const showStatus = (msg) => {
+        copyStatus.textContent = msg;
+        clearTimeout(showStatus._t);
+        showStatus._t = setTimeout(()=> copyStatus.textContent = '', 2000);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(
+          ()=> showStatus('copied ♡ go shop pretty things'),
+          ()=> showStatus('tap and hold to copy')
+        );
+      } else {
+        const range = document.createRange();
+        range.selectNodeContents(document.getElementById('couponCodeText'));
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try { document.execCommand('copy'); showStatus('copied ♡'); }
+        catch(_){ showStatus('select & copy it ♡'); }
+      }
+    });
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape' && overlay.classList.contains('show')) closePuzzle();
+    });
+  })();
+
 </script>
 
 </body>
